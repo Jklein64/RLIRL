@@ -4,7 +4,7 @@ import keyboard
 from time import sleep
 
 KEYS = { "w", "a", "s", "d", "q", "e", "space" }
-DEVICE = "/dev/tty.usbserial-110"
+DEVICE = "/dev/tty.usbserial-210"
 
 serial = open(DEVICE, "w")
 
