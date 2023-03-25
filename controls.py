@@ -1,34 +1,27 @@
 # see https://www.delftstack.com/howto/python/python-detect-keypress/
 
 import keyboard
-from time import perf_counter
+from time import sleep
 
-def millis():
-    return perf_counter() * 1000
-
-# wait 10ms before counting again
-DEBOUNCE_DURATION = 10
 KEYS = { "w", "a", "s", "d", "q", "e", "space" }
 
 # store last timestamp
-held = {
+is_pressed = {
     key: False for key in KEYS
 }
 
+def pressed():
+    for key, pressed in is_pressed.items():
+        if pressed:
+            yield key
 
 while True:
     for key in KEYS:
-        held[key] = keyboard.is_pressed(key)
-    # event = keyboard.read_event()
-    # if event.name in KEYS:
-    #     if event.event_type == keyboard.KEY_DOWN:
-    #         held[event.name] = True
-    #     elif event.event_type == keyboard.KEY_UP:
-    #         held[event.name] = False
-    print([key for (key, b) in held.items() if b])
-awd
-    # for key in KEYS:
-    #     if keyboard.read_key() == key:
-    #         if millis() - debounce[key] > DEBOUNCE_DURATION:
-    #             print(f"pressed {key}!")
-    #             debounce[key] = millis()
+        is_pressed[key] = keyboard.is_pressed(key)
+
+    p = list(pressed())
+    if len(p) > 0:
+        print("".join(p))
+
+    # small delay so we don't totally spam
+    sleep(0.1)
