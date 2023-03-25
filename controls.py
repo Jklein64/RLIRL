@@ -4,6 +4,9 @@ import keyboard
 from time import sleep
 
 KEYS = { "w", "a", "s", "d", "q", "e", "space" }
+DEVICE = "/dev/tty.usbserial-110"
+
+serial = open(DEVICE, "w")
 
 # store last timestamp
 is_pressed = {
@@ -22,9 +25,9 @@ while True:
     for key in KEYS:
         is_pressed[key] = keyboard.is_pressed(key)
 
-    p = list(pressed())
-    if len(p) > 0:
-        print("".join(p))
+    for key in pressed():
+        serial.write(key)
+        serial.flush()
 
     # small delay so we don't totally spam
     sleep(0.1)
