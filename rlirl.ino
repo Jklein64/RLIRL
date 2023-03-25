@@ -23,7 +23,9 @@ servos:
 Servo danny;  // create servo object to control the ESC
 Servo sammy;
 
-int interpolant = 0;  // value from the analog pin
+int
+    steer = (SAMMY_MIN + SAMMY_MAX) / 2,  // SAMMY_MIN to SAMMY_MAX
+    throttle = 0;                         // 0 to 100, and then interpolate for each motor
 
 char input;
 
@@ -40,22 +42,24 @@ void loop() {
     if (Serial.available() > 0) {
         input = Serial.read();
         switch (input) {
-            case 's':
-                interpolant -= 5;
+            case 'a':
+                steer -= 5;
                 break;
-            case 'w':
-                interpolant += 5;
+            case 'd':
+                steer += 5;
                 break;
             case '=':
-                interpolant += 10;
+                throttle += 10;
                 break;
             case '-':
-                interpolant -= 10;
+                throttle -= 10;
                 break;
         }
 
-        Serial.println(interpolant);
+        Serial.println(steer);
+        Serial.println(throttle);
     }
 
-    sammy.write(interpolant);
+    sammy.write(steer);
+    danny.write(throttle);
 }
