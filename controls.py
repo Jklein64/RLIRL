@@ -13,7 +13,10 @@ is_pressed = {
 def pressed():
     for key, pressed in is_pressed.items():
         if pressed:
-            yield key
+            if key == "space":
+                yield " "
+            else:
+                yield key
 
 while True:
     for key in KEYS:
