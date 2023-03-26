@@ -13,6 +13,9 @@ servos:
  - gimbal #1: Gary
  - gimbal #2: Greg
  - steering: Sammy
+
+ sensors:
+  - ultrasonic: Uma
 */
 
 #define DANNY_MIN 80
@@ -30,6 +33,9 @@ servos:
 #define MADHA_MAX 100
 #define MADHA_PIN 10
 
+#define UMA_TRIG_PIN A7
+#define UMA_ECHO_PIN A6
+
 Servo danny, sammy, gary, madha;
 
 int
@@ -45,6 +51,11 @@ int
     keys_since_last_w = 0,
     keys_since_last_steer = 0;
 
+unsigned long duration, distance;
+// unsigned long
+//     last_uma_trig = micros(),
+//     last_uma_trig_elapsed = 0;
+
 RF24 radio(9, 8);
 const byte address[10] = "ADDRESS01";
 
@@ -57,15 +68,47 @@ void setup() {
     madha.attach(MADHA_PIN, 1000, 2000);
     madha.write(0);
 
+    // setup ultrasonic
+    pinMode(UMA_TRIG_PIN, OUTPUT);
+    pinMode(UMA_ECHO_PIN, INPUT);
+    digitalWrite(UMA_TRIG_PIN, LOW);
+    delayMicroseconds(5);
+
     radio.begin();
     radio.openReadingPipe(0, address);
     radio.setPALevel(RF24_PA_MIN);
     radio.startListening();
+    Serial.println("Radio begun!");
 }
 
 void loop() {
+    /*     // ultrasonic things
+        digitalWrite(UMA_TRIG_PIN, LOW);
+        delayMicroseconds(5);
+        // trigger sensor by setting high for 10us
+        digitalWrite(UMA_TRIG_PIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(UMA_TRIG_PIN, LOW);
+
+        duration = pulseIn(UMA_ECHO_PIN, HIGH, 35);
+        distance = duration * 0.034 / 2;
+        Serial.print("Distance = ");
+        Serial.print(distance);
+        Serial.println(" cm"); */
+
+    // last_uma_trig_elapsed = micros() - last_uma_trig;
+    // if (last_uma_trig_elapsed < 5)
+    //     digitalWrite(UMA_TRIG_PIN, LOW);
+    // // trigger sensor by setting high for 10us
+    // else if (last_uma_trig_elapsed < 5 + 10) {
+    //     digitalWrite(UMA_TRIG_PIN, HIGH);
+    //     last_uma_trig = micros();
+    // } else
+    //     digitalWrite(UMA_TRIG_PIN, LOW);
+
     // listen for key from transmitter
     if (radio.available()) {
+        Serial.println("something was available from radio");
         char key = 0;
         radio.read(&key, sizeof(key));
         Serial.println(key);
@@ -75,29 +118,29 @@ void loop() {
 
         switch (key) {
             case 'q':
-                gimbal_1--;
+                gimbal_1 -= 10;
                 break;
 
             case 'e':
-                gimbal_1++;
+                gimbal_1 += 10;
                 break;
 
             case 'w':
-                throttle++;
+                throttle += 10;
                 keys_since_last_w = 0;
                 break;
 
             case 's':
-                throttle--;
+                throttle -= 10;
                 break;
 
             case 'a':
-                steer++;
+                steer += 10;
                 keys_since_last_steer = 0;
                 break;
 
             case 'd':
-                steer--;
+                steer -= 10;
                 keys_since_last_steer = 0;
                 break;
 
@@ -116,10 +159,10 @@ void loop() {
 
     gimbal_1 = clamp(gimbal_1, GARY_MIN, GARY_MAX);
 
-    if (keys_since_last_w >= 7 && throttle >= 0)
+    if (keys_since_last_w >= 5 && throttle >= 0)
         throttle--;
 
-    if (keys_since_last_steer >= 6) {
+    if (keys_since_last_steer >= 3) {
         // move steer towards the middle
         if (steer < SAMMY_CENTER)
             steer++;
