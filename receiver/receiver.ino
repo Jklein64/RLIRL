@@ -1,3 +1,4 @@
+#include <NewPing.h>
 #include <RF24.h>
 #include <SPI.h>
 #include <Servo.h>
@@ -51,13 +52,10 @@ int
     keys_since_last_w = 0,
     keys_since_last_steer = 0;
 
-unsigned long duration, distance;
-// unsigned long
-//     last_uma_trig = micros(),
-//     last_uma_trig_elapsed = 0;
-
 RF24 radio(9, 8);
 const byte address[10] = "ADDRESS01";
+
+NewPing sonar(UMA_TRIG_PIN, UMA_ECHO_PIN, 6);
 
 void setup() {
     Serial.begin(9600);
@@ -66,6 +64,7 @@ void setup() {
     sammy.attach(SAMMY_PIN);
     danny.attach(DANNY_PIN, 1000, 2000);
     madha.attach(MADHA_PIN, 1000, 2000);
+    danny.write(0);
     madha.write(0);
 
     // setup ultrasonic
@@ -82,19 +81,10 @@ void setup() {
 }
 
 void loop() {
-    // ultrasonic things
-    digitalWrite(UMA_TRIG_PIN, LOW);
-    delayMicroseconds(5);
-    // trigger sensor by setting high for 10us
-    digitalWrite(UMA_TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(UMA_TRIG_PIN, LOW);
-
-    duration = pulseIn(UMA_ECHO_PIN, HIGH, 35);
-    distance = duration * 0.034 / 2;
-    Serial.print("Distance = ");
-    Serial.print(distance);
-    Serial.println(" cm");
+    delay(50);  // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+    Serial.print("Ping: ");
+    Serial.print(sonar.ping_cm());  // Send ping, get distance in cm and print result (0 = outside set distance range)
+    Serial.println("cm");
 
     // listen for key from transmitter
     if (radio.available()) {
