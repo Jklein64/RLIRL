@@ -22,11 +22,19 @@ def pressed():
                 yield key
 
 while True:
+    wrote = False
+
     for key in KEYS:
         is_pressed[key] = keyboard.is_pressed(key)
 
     for key in pressed():
+        wrote = True
         serial.write(key)
+        serial.flush()
+
+    if not wrote:
+        # write a stupid char
+        serial.write('*')
         serial.flush()
 
     # small delay so we don't totally spam
