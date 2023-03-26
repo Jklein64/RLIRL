@@ -118,38 +118,3 @@ void loop() {
 int clamp(int value, int low, int high) {
     return max(low, min(value, high));
 }
-
-// void setup() {
-//     Serial.begin(9600);
-
-//     danny.attach(DANNY_PIN, 1000, 2000);  // (pin, min pulse width, max pulse width in microseconds)
-//     sammy.attach(SAMMY_PIN);
-//     danny.write(0);
-//     delay(5000);
-// }
-
-// void loop() {
-//     if (Serial.available() > 0) {
-//         input = Serial.read();
-//         switch (input) {
-//             case 'a':
-//                 steer -= 5;
-//                 break;
-//             case 'd':
-//                 steer += 5;
-//                 break;
-//             case '=':
-//                 throttle += 10;
-//                 break;
-//             case '-':
-//                 throttle -= 10;
-//                 break;
-//         }
-
-//         Serial.println(steer);
-//         Serial.println(throttle);
-//     }
-
-//     sammy.write(steer);
-//     danny.write(throttle);
-// }
