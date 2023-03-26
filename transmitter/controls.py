@@ -38,4 +38,4 @@ while True:
         serial.flush()
 
     # small delay so we don't totally spam
-    sleep(0.01)
+    sleep(0.1)

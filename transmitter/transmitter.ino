@@ -21,7 +21,9 @@ void loop() {
     if (Serial.available() > 0) {
         const char input = Serial.read();
         radio.write(&input, sizeof(input));
-        Serial.print("Sent ");
-        Serial.println(input);
+        if (input != '*') {
+            Serial.print("Sent ");
+            Serial.println(input);
+        }
     }
 }
