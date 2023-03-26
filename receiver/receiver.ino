@@ -1,4 +1,3 @@
-#include <NewPing.h>
 #include <RF24.h>
 #include <SPI.h>
 #include <Servo.h>
@@ -14,9 +13,6 @@ servos:
  - gimbal #1: Gary
  - gimbal #2: Greg
  - steering: Sammy
-
- sensors:
-  - ultrasonic: Uma
 */
 
 #define DANNY_MIN 80
@@ -33,9 +29,6 @@ servos:
 #define MADHA_MIN 0
 #define MADHA_MAX 100
 #define MADHA_PIN 10
-
-#define UMA_TRIG_PIN A7
-#define UMA_ECHO_PIN A6
 
 Servo danny, sammy, gary, madha;
 
@@ -55,8 +48,6 @@ int
 RF24 radio(9, 8);
 const byte address[10] = "ADDRESS01";
 
-NewPing sonar(UMA_TRIG_PIN, UMA_ECHO_PIN, 6);
-
 void setup() {
     Serial.begin(9600);
 
@@ -67,12 +58,6 @@ void setup() {
     danny.write(0);
     madha.write(0);
 
-    // setup ultrasonic
-    pinMode(UMA_TRIG_PIN, OUTPUT);
-    pinMode(UMA_ECHO_PIN, INPUT);
-    digitalWrite(UMA_TRIG_PIN, LOW);
-    delayMicroseconds(5);
-
     radio.begin();
     radio.openReadingPipe(0, address);
     radio.setPALevel(RF24_PA_MIN);
@@ -81,11 +66,6 @@ void setup() {
 }
 
 void loop() {
-    delay(50);  // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
-    Serial.print("Ping: ");
-    Serial.print(sonar.ping_cm());  // Send ping, get distance in cm and print result (0 = outside set distance range)
-    Serial.println("cm");
-
     // listen for key from transmitter
     if (radio.available()) {
         char key = 0;
