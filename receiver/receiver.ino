@@ -149,14 +149,17 @@ void loop() {
     gimbal_1 = clamp(gimbal_1, GARY_MIN, GARY_MAX);
 
     if (keys_since_last_w >= 5 && throttle >= 0)
-        throttle--;
+        throttle -= 10;
 
     if (keys_since_last_steer >= 3) {
+        // fix spazzing from increments
+        if (abs(steer - SAMMY_CENTER) <= 20)
+            steer = SAMMY_CENTER;
         // move steer towards the middle
         if (steer < SAMMY_CENTER)
-            steer++;
+            steer += 10;
         else
-            steer--;
+            steer -= 10;
     }
 
     throttle = clamp(throttle, 0, 100);
