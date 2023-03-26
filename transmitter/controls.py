@@ -3,7 +3,7 @@
 import keyboard
 from time import sleep
 
-KEYS = { "w", "a", "s", "d", "q", "e", "space" }
+KEYS = { "w", "a", "s", "d", "q", "e", "p", "o", "space" }
 DEVICE = "/dev/tty.usbserial-210"
 
 serial = open(DEVICE, "w")

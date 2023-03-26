@@ -15,18 +15,22 @@ servos:
  - steering: Sammy
 */
 
-#define DANNY_MIN 85
+#define DANNY_MIN 80
 #define DANNY_MAX 200
 #define DANNY_PIN 6
 
 #define SAMMY_CENTER 120
 #define SAMMY_PIN 3
 
-#define GARY_MIN 0    // update this!
-#define GARY_MAX 180  // update this!
+#define GARY_MIN 0
+#define GARY_MAX 180
 #define GARY_PIN 7
 
-Servo danny, sammy, gary;
+#define MADHA_MIN 0
+#define MADHA_MAX 100
+#define MADHA_PIN 10
+
+Servo danny, sammy, gary, madha;
 
 int
     steer = SAMMY_CENTER,
@@ -50,6 +54,8 @@ void setup() {
     gary.attach(GARY_PIN);
     sammy.attach(SAMMY_PIN);
     danny.attach(DANNY_PIN, 1000, 2000);
+    madha.attach(MADHA_PIN, 1000, 2000);
+    madha.write(0);
 
     radio.begin();
     radio.openReadingPipe(0, address);
@@ -94,6 +100,17 @@ void loop() {
                 steer--;
                 keys_since_last_steer = 0;
                 break;
+
+            case 'p':
+                for (size_t i = 0; i < MADHA_MAX; i++) {
+                    madha.write(i);
+                    delay(5);
+                }
+                break;
+
+            case 'o':
+                madha.write(0);
+                break;
         }
     }
 
@@ -110,8 +127,10 @@ void loop() {
             steer--;
     }
 
+    throttle = clamp(throttle, 0, 100);
+
     sammy.write(steer);
-    danny.write(throttle);
+    danny.write(map(throttle, 0, 100, DANNY_MIN, DANNY_MAX));
     gary.write(gimbal_1);
 }
 
