@@ -23,17 +23,14 @@ servos:
 #define SAMMY_MAX 179
 #define SAMMY_PIN 2
 
-Servo danny;  // create servo object to control the ESC
+Servo danny;
 Servo sammy;
 
 int
     steer = (SAMMY_MIN + SAMMY_MAX) / 2,  // SAMMY_MIN to SAMMY_MAX
     throttle = 0;                         // 0 to 100, and then interpolate for each motor
 
-char input;
-
 RF24 radio(9, 8);
-
 const byte address[10] = "ADDRESS01";
 
 void setup() {
@@ -47,10 +44,11 @@ void setup() {
 }
 
 void loop() {
+    // listen for key from transmitter
     if (radio.available()) {
-        char text[32] = "";
-        radio.read(&text, sizeof(text));
-        Serial.println(text);
+        char key = 0;
+        radio.read(&key, sizeof(key));
+        Serial.println(key);
     }
 }
 

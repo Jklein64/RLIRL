@@ -3,8 +3,6 @@
 #include <nRF24L01.h>
 
 RF24 radio(9, 8);
-char input;
-
 const byte address[10] = "ADDRESS01";
 
 void setup() {
@@ -20,10 +18,10 @@ void setup() {
 }
 
 void loop() {
-    const char text[] = "Hello world!";
-    radio.write(&text, sizeof(text));
-    Serial.println("wrote!");
-    delay(1000);
-    // if (Serial.available() > 0)
-    //     input = Serial.read();
+    if (Serial.available() > 0) {
+        const char input = Serial.read();
+        radio.write(&input, sizeof(input));
+        Serial.print("Sent ");
+        Serial.println(input);
+    }
 }
