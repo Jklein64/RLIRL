@@ -1,33 +1,29 @@
-boolean blinking = true;
-boolean is_high = false;
-unsigned long last_blink = millis();
+#include <RF24.h>
+#include <SPI.h>
+#include <nRF24L01.h>
 
-char input = 0;
+RF24 radio(9, 8);
+char input;
+
+const byte address[10] = "ADDRESS01";
 
 void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
 
     Serial.begin(9600);
-    delay(5000);
     Serial.println("Wheee!");
+
+    radio.begin();
+    radio.openWritingPipe(address);
+    radio.setPALevel(RF24_PA_MIN);
+    radio.stopListening();
 }
 
 void loop() {
-    if (Serial.available() > 0)
-        input = Serial.read();
-    else
-        input = 0;
-
-    blinking = input != 0;
-
-    if (blinking) {
-        if (millis() - last_blink > 500) {
-            is_high = !is_high;
-            last_blink = millis();
-        }
-
-        digitalWrite(LED_BUILTIN, is_high ? HIGH : LOW);
-    } else {
-        digitalWrite(LED_BUILTIN, LOW);
-    }
+    const char text[] = "Hello world!";
+    radio.write(&text, sizeof(text));
+    Serial.println("wrote!");
+    delay(1000);
+    // if (Serial.available() > 0)
+    //     input = Serial.read();
 }

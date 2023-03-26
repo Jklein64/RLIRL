@@ -1,4 +1,7 @@
+#include <RF24.h>
+#include <SPI.h>
 #include <Servo.h>
+#include <nRF24L01.h>
 
 /*
 motors:
@@ -29,37 +32,59 @@ int
 
 char input;
 
+RF24 radio(9, 8);
+
+const byte address[10] = "ADDRESS01";
+
 void setup() {
     Serial.begin(9600);
+    pinMode(LED_BUILTIN, OUTPUT);
 
-    danny.attach(DANNY_PIN, 1000, 2000);  // (pin, min pulse width, max pulse width in microseconds)
-    sammy.attach(SAMMY_PIN);
-    danny.write(0);
-    delay(5000);
+    radio.begin();
+    radio.openReadingPipe(0, address);
+    radio.setPALevel(RF24_PA_MIN);
+    radio.startListening();
 }
 
 void loop() {
-    if (Serial.available() > 0) {
-        input = Serial.read();
-        switch (input) {
-            case 'a':
-                steer -= 5;
-                break;
-            case 'd':
-                steer += 5;
-                break;
-            case '=':
-                throttle += 10;
-                break;
-            case '-':
-                throttle -= 10;
-                break;
-        }
-
-        Serial.println(steer);
-        Serial.println(throttle);
+    if (radio.available()) {
+        char text[32] = "";
+        radio.read(&text, sizeof(text));
+        Serial.println(text);
     }
-
-    sammy.write(steer);
-    danny.write(throttle);
 }
+
+// void setup() {
+//     Serial.begin(9600);
+
+//     danny.attach(DANNY_PIN, 1000, 2000);  // (pin, min pulse width, max pulse width in microseconds)
+//     sammy.attach(SAMMY_PIN);
+//     danny.write(0);
+//     delay(5000);
+// }
+
+// void loop() {
+//     if (Serial.available() > 0) {
+//         input = Serial.read();
+//         switch (input) {
+//             case 'a':
+//                 steer -= 5;
+//                 break;
+//             case 'd':
+//                 steer += 5;
+//                 break;
+//             case '=':
+//                 throttle += 10;
+//                 break;
+//             case '-':
+//                 throttle -= 10;
+//                 break;
+//         }
+
+//         Serial.println(steer);
+//         Serial.println(throttle);
+//     }
+
+//     sammy.write(steer);
+//     danny.write(throttle);
+// }
