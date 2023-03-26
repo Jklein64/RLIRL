@@ -65,6 +65,7 @@ void loop() {
         Serial.println(key);
 
         keys_since_last_w++;
+        keys_since_last_steer++;
 
         switch (key) {
             case 'q':
@@ -82,13 +83,14 @@ void loop() {
 
             case 's':
                 throttle--;
+                break;
 
-            case 'd':
+            case 'a':
                 steer++;
                 keys_since_last_steer = 0;
                 break;
 
-            case 'a':
+            case 'd':
                 steer--;
                 keys_since_last_steer = 0;
                 break;
