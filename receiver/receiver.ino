@@ -10,32 +10,37 @@ motors:
  - mass: Madha
 
 servos:
- - gimbal #1: Greg
- - gimbal #2: Gary
+ - gimbal #1: Gary
+ - gimbal #2: Greg
  - steering: Sammy
 */
 
 #define DANNY_MIN 85
 #define DANNY_MAX 0
-#define DANNY_PIN 3
+#define DANNY_PIN 10
 
 #define SAMMY_MIN 2
 #define SAMMY_MAX 179
 #define SAMMY_PIN 2
 
-Servo danny;
-Servo sammy;
+#define GARY_MIN 0    // update this!
+#define GARY_MAX 180  // update this!
+#define GARY_PIN 7
+
+Servo danny, sammy, gary;
 
 int
     steer = (SAMMY_MIN + SAMMY_MAX) / 2,  // SAMMY_MIN to SAMMY_MAX
-    throttle = 0;                         // 0 to 100, and then interpolate for each motor
+    gimbal_1 = (GARY_MIN + GARY_MAX) / 2,
+    throttle = 0;  // 0 to 100, and then interpolate for each motor
 
 RF24 radio(9, 8);
 const byte address[10] = "ADDRESS01";
 
 void setup() {
     Serial.begin(9600);
-    pinMode(LED_BUILTIN, OUTPUT);
+
+    gary.attach(GARY_PIN);
 
     radio.begin();
     radio.openReadingPipe(0, address);
@@ -49,7 +54,14 @@ void loop() {
         char key = 0;
         radio.read(&key, sizeof(key));
         Serial.println(key);
+
+        if (key == 'q')
+            gimbal_1 -= 1;
+        else if (key == 'e')
+            gimbal_1 += 1;
     }
+
+    gary.write(gimbal_1);
 }
 
 // void setup() {
