@@ -3,7 +3,15 @@
 import keyboard
 from time import sleep
 
-KEYS = { "w", "a", "s", "d", "q", "e", "p", "o", "space" }
+KEYS = { 
+    "w", "s", # back wheels
+    "a", "d", # steering
+    "q", "e", # Gary
+    "j", "k", # Greg
+    "p", "o", #Madha
+    "space"
+}
+
 DEVICE = "/dev/tty.usbserial-210"
 
 serial = open(DEVICE, "w")
@@ -38,4 +46,4 @@ while True:
         serial.flush()
 
     # small delay so we don't totally spam
-    sleep(0.1)
+    sleep(0.01)
