@@ -82,33 +82,22 @@ void setup() {
 }
 
 void loop() {
-    /*     // ultrasonic things
-        digitalWrite(UMA_TRIG_PIN, LOW);
-        delayMicroseconds(5);
-        // trigger sensor by setting high for 10us
-        digitalWrite(UMA_TRIG_PIN, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(UMA_TRIG_PIN, LOW);
+    // ultrasonic things
+    digitalWrite(UMA_TRIG_PIN, LOW);
+    delayMicroseconds(5);
+    // trigger sensor by setting high for 10us
+    digitalWrite(UMA_TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(UMA_TRIG_PIN, LOW);
 
-        duration = pulseIn(UMA_ECHO_PIN, HIGH, 35);
-        distance = duration * 0.034 / 2;
-        Serial.print("Distance = ");
-        Serial.print(distance);
-        Serial.println(" cm"); */
-
-    // last_uma_trig_elapsed = micros() - last_uma_trig;
-    // if (last_uma_trig_elapsed < 5)
-    //     digitalWrite(UMA_TRIG_PIN, LOW);
-    // // trigger sensor by setting high for 10us
-    // else if (last_uma_trig_elapsed < 5 + 10) {
-    //     digitalWrite(UMA_TRIG_PIN, HIGH);
-    //     last_uma_trig = micros();
-    // } else
-    //     digitalWrite(UMA_TRIG_PIN, LOW);
+    duration = pulseIn(UMA_ECHO_PIN, HIGH, 35);
+    distance = duration * 0.034 / 2;
+    Serial.print("Distance = ");
+    Serial.print(distance);
+    Serial.println(" cm");
 
     // listen for key from transmitter
     if (radio.available()) {
-        Serial.println("something was available from radio");
         char key = 0;
         radio.read(&key, sizeof(key));
         Serial.println(key);
