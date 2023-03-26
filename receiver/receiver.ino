@@ -55,10 +55,15 @@ void loop() {
         radio.read(&key, sizeof(key));
         Serial.println(key);
 
-        if (key == 'q')
-            gimbal_1 -= 1;
-        else if (key == 'e')
-            gimbal_1 += 1;
+        switch (key) {
+            case 'q':
+                gimbal_1--;
+                break;
+
+            case 'e':
+                gimbal_1++;
+                break;
+        }
     }
 
     gary.write(gimbal_1);
